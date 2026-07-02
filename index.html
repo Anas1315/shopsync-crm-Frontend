@@ -3,867 +3,1352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopSync POS & Inventory Manager</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>ShopSync CRM - Admin Panel</title>
     <!-- Google Fonts for premium typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-</head>
-<body class="theme-general">
-    <!-- Background Overlay for Theme Specifics -->
-    <div class="theme-background-overlay"></div>
-    <div class="theme-pattern-overlay"></div>
+    
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #111827;
+            --bg-card: rgba(31, 41, 55, 0.45);
+            --bg-input: #1f2937;
+            --border-color: rgba(255, 255, 255, 0.08);
+            
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            
+            --accent-primary: #6366f1; /* Indigo */
+            --accent-success: #10b981; /* Emerald */
+            --accent-warning: #f59e0b; /* Amber */
+            --accent-danger: #ef4444;  /* Rose */
+            
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-title: 'Outfit', sans-serif;
+            
+            --blur-strength: 16px;
+            --border-radius: 12px;
+            --transition-speed: 0.25s;
+        }
 
-    <!-- AUTHENTICATION CONTAINER (Sign In / Sign Up) -->
-    <div id="auth-container" class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <div class="logo-wrapper">
-                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 10;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent-primary), #818cf8);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .brand-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .brand-text h2 {
+            font-family: var(--font-title);
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition-speed);
+            border: 1px solid transparent;
+        }
+
+        .menu-item:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .menu-item.active {
+            color: white;
+            background-color: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent-primary);
+            font-family: var(--font-title);
+        }
+
+        .admin-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .admin-role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all var(--transition-speed);
+        }
+
+        .btn-logout:hover {
+            color: var(--accent-danger);
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .btn-logout svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: 70px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            background-color: rgba(17, 24, 39, 0.3);
+            backdrop-filter: blur(var(--blur-strength));
+        }
+
+        .topbar-title h1 {
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            background-color: rgba(16, 185, 129, 0.08);
+            color: var(--accent-success);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-success);
+        }
+
+        /* SCREENS & CONTAINERS */
+        .screen-container {
+            flex-grow: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .app-screen {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .screen-header h2 {
+            font-family: var(--font-title);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .screen-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            backdrop-filter: blur(var(--blur-strength));
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon.users { background-color: rgba(99, 102, 241, 0.1); color: var(--accent-primary); }
+        .stat-icon.products { background-color: rgba(16, 185, 129, 0.1); color: var(--accent-success); }
+        .stat-icon.invoices { background-color: rgba(245, 158, 11, 0.1); color: var(--accent-warning); }
+        .stat-icon.revenue { background-color: rgba(239, 68, 68, 0.1); color: var(--accent-danger); }
+
+        .stat-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .stat-info h4 {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-info .value {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        /* GENERAL STYLES: BUTTONS & TABLES */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            border: none;
+            font-family: var(--font-main);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #4f46e5;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        /* TABLE */
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(var(--blur-strength));
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .panel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h3 {
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .table th {
+            padding: 14px 24px;
+            background-color: rgba(0, 0, 0, 0.15);
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table td {
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover td {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-general { background-color: rgba(99, 102, 241, 0.15); color: #818cf8; }
+        .badge-kiryana { background-color: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .badge-bike { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .badge-rickshaw { background-color: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .badge-electronics { background-color: rgba(6, 182, 212, 0.15); color: #22d3ee; }
+        .badge-pharmacy { background-color: rgba(236, 72, 153, 0.15); color: #f472b6; }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 4px;
+            border-radius: 4px;
+            transition: all var(--transition-speed);
+        }
+
+        .btn-icon:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-icon.edit:hover { color: var(--accent-warning); }
+        .btn-icon.delete:hover { color: var(--accent-danger); }
+        .btn-icon.browse:hover { color: var(--accent-primary); }
+
+        .btn-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity var(--transition-speed);
+        }
+
+        .modal-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            width: 550px;
+            max-width: 90%;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-title);
+            font-size: 18px;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .btn-close:hover {
+            color: white;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: white;
+            font-family: var(--font-main);
+            font-size: 14px;
+            transition: border-color var(--transition-speed);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* CLIENT DATA BROWSER SPLIT LAYOUT */
+        .browser-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            height: calc(100vh - 200px);
+        }
+
+        .browser-sidebar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .browser-sidebar h3 {
+            font-family: var(--font-title);
+            font-size: 16px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .client-list-scroll {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .client-list-item {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+
+        .client-list-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-color: var(--border-color);
+        }
+
+        .client-list-item.active {
+            background-color: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .client-list-item h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .client-list-item p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .browser-content {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            gap: 20px;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: var(--font-title);
+            font-weight: 600;
+            font-size: 15px;
+            border-bottom: 2px solid transparent;
+            transition: all var(--transition-speed);
+        }
+
+        .tab-btn:hover {
+            color: white;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .tab-panel-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 24px;
+        }
+
+        .empty-browser-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        .empty-browser-state svg {
+            width: 64px;
+            height: 64px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        /* CRM LOGIN SCREEN */
+        .crm-login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            background-image: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+        }
+
+        .crm-login-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 420px;
+            padding: 36px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            backdrop-filter: blur(var(--blur-strength));
+        }
+
+        .crm-login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .crm-login-header h2 {
+            font-family: var(--font-title);
+            font-size: 24px;
+            margin-top: 12px;
+        }
+
+        .crm-login-header p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        /* CUSTOM NOTIFICATION */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            animation: toastSlideIn 0.3s ease-out;
+        }
+
+        @keyframes toastSlideIn {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CRM AUTHENTICATION SCREEN -->
+    <div id="crm-login-screen" class="crm-login-container">
+        <div class="crm-login-card">
+            <div class="crm-login-header">
+                <div class="brand-icon" style="margin: 0 auto;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
                 </div>
-                <h1>ShopSync POS</h1>
-                <p id="auth-subtitle">Professional Retail & Inventory Management</p>
+                <h2>ShopSync CRM</h2>
+                <p>System Administrator Portal</p>
+            </div>
+            <div id="crm-auth-toggle-container" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button type="button" class="btn btn-primary" id="btn-show-login" style="flex:1;">Login</button>
+                <button type="button" class="btn btn-outline" id="btn-show-signup" style="flex:1;">Sign Up</button>
             </div>
 
-            <!-- Login Form (Now default under CRM management) -->
-            <form id="login-form" class="auth-form">
+            <!-- Login Form -->
+            <form id="crm-login-form">
                 <div class="form-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" placeholder="Enter username" required>
+                    <label for="crm-username">Admin Username</label>
+                    <input type="text" id="crm-username" class="form-control" placeholder="Enter username" required>
                 </div>
                 <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter password" required>
+                    <label for="crm-password">Admin Password</label>
+                    <input type="password" id="crm-password" class="form-control" placeholder="Enter password" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Access POS System</button>
-                <div class="auth-footer" style="color: var(--text-muted); font-size: 12px; margin-top: 15px; text-align: center; line-height: 1.5;">
-                    This software is managed via the ShopSync CRM.<br>
-                    To register a new shop or activate your license, please contact your System Administrator.
+                <button type="submit" class="btn btn-primary btn-block" style="width:100%; justify-content: center; margin-top: 10px;">
+                    Authenticate Admin
+                </button>
+            </form>
+
+            <!-- Signup Form (Hidden initially) -->
+            <form id="crm-signup-form" class="hidden">
+                <div class="form-group">
+                    <label for="crm-new-username">New Admin Username</label>
+                    <input type="text" id="crm-new-username" class="form-control" placeholder="Create username" required>
                 </div>
+                <div class="form-group">
+                    <label for="crm-new-password">New Admin Password</label>
+                    <input type="password" id="crm-new-password" class="form-control" placeholder="Create password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" style="width:100%; justify-content: center; margin-top: 10px;">
+                    Set Credentials
+                </button>
+                <p style="text-align:center; font-size: 11px; margin-top:10px; color: var(--text-secondary);">
+                    This will lock the CRM dashboard to your custom credentials.
+                </p>
             </form>
         </div>
     </div>
 
-    <!-- MAIN APPLICATION CONTAINER -->
-    <div id="app-container" class="app-container hidden">
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    </svg>
-                </div>
-                <div class="brand-text">
-                    <h2 id="display-shop-name">ShopSync</h2>
-                    <span class="badge-type">POS System</span>
+    <!-- MAIN CRM SIDEBAR -->
+    <aside class="sidebar hidden" id="crm-sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h2>ShopSync</h2>
+                <span>CRM Control Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="#" class="menu-item active" data-target="crm-screen-dashboard">
+                <svg class="menu-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="9" rx="1" />
+                    <rect x="14" y="3" width="7" height="5" rx="1" />
+                    <rect x="14" y="12" width="7" height="9" rx="1" />
+                    <rect x="3" y="16" width="7" height="5" rx="1" />
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="menu-item" data-target="crm-screen-users">
+                <svg class="menu-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span>Client Accounts</span>
+            </a>
+            <a href="#" class="menu-item" data-target="crm-screen-browser">
+                <svg class="menu-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    <line x1="12" y1="11" x2="12" y2="17"/>
+                    <line x1="9" y1="14" x2="15" y2="14"/>
+                </svg>
+                <span>Browse Client Data</span>
+            </a>
+            <a href="#" class="menu-item" data-target="crm-screen-software-sales">
+                <svg class="menu-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>Software Sales & Profit</span>
+            </a>
+            <a href="#" class="menu-item" data-target="crm-screen-settings">
+                <svg class="menu-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span>System & Server</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <div class="avatar">SA</div>
+                <div class="admin-details">
+                    <span class="admin-name">Super Admin</span>
+                    <span class="admin-role">Owner</span>
                 </div>
             </div>
+            <button class="btn-logout" id="btn-crm-logout" title="Log Out">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                </svg>
+            </button>
+        </div>
+    </aside>
 
-            <nav class="sidebar-menu">
-                <a href="#" class="menu-item active" data-target="screen-dashboard">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="9" rx="1" />
-                        <rect x="14" y="3" width="7" height="5" rx="1" />
-                        <rect x="14" y="12" width="7" height="9" rx="1" />
-                        <rect x="3" y="16" width="7" height="5" rx="1" />
-                    </svg>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="menu-item" data-target="screen-pos">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="4" width="20" height="8" rx="2" ry="2" />
-                        <path d="M12 2v2M12 12v10M2 12h20M6 8h2M10 8h2M14 8h2M18 8h.01" />
-                    </svg>
-                    <span>Point of Sale (POS)</span>
-                </a>
-                <a href="#" class="menu-item" data-target="screen-inventory">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                        <path d="M12 11h.01M12 17h.01" />
-                    </svg>
-                    <span>Inventory</span>
-                </a>
-                <a href="#" class="menu-item" data-target="screen-reports">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="20" x2="18" y2="10" />
-                        <line x1="12" y1="20" x2="12" y2="4" />
-                        <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
-                    <span>Reports & P&L</span>
-                </a>
-                <a href="#" class="menu-item" data-target="screen-settings">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3" />
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                    <span>Settings & Sync</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="avatar">AD</div>
-                    <div class="user-info">
-                        <span class="user-name" id="display-username">Admin</span>
-                        <span class="user-role">Administrator</span>
-                    </div>
-                </div>
-                <button id="btn-logout" class="btn-icon-only" title="Log Out">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
-                    </svg>
-                </button>
+    <!-- MAIN CRM VIEWPORT -->
+    <main class="main-content hidden" id="crm-main-content">
+        <header class="topbar">
+            <div class="topbar-title">
+                <h1 id="crm-topbar-title-text">Dashboard Overview</h1>
             </div>
-        </aside>
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span>Server Connected (SQLite JSON Cloud)</span>
+            </div>
+        </header>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="main-content">
-            <!-- TOP BAR -->
-            <header class="topbar">
-                <div class="topbar-search">
-                    <span class="system-time" id="system-clock">00:00:00 PM</span>
-                </div>
-                <div class="topbar-actions">
-                    <!-- Cloud Sync Indicator -->
-                    <div id="cloud-sync-status" class="sync-indicator offline" title="Cloud Sync Status">
-                        <span class="indicator-dot"></span>
-                        <span class="indicator-text">Offline Mode</span>
+        <div class="screen-container">
+            
+            <!-- SECTION 1: SYSTEM DASHBOARD -->
+            <section id="crm-screen-dashboard" class="app-screen">
+                <div class="screen-header">
+                    <div>
+                        <h2>System-Wide Analytics</h2>
+                        <p>Aggregated metrics across all registered client shops</p>
                     </div>
-                    <button id="btn-quick-pos" class="btn btn-primary btn-sm">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 6px;">
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon users">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Total Registered Shops</h4>
+                            <div class="value" id="crm-stat-users">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon products">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Total Synced Products</h4>
+                            <div class="value" id="crm-stat-products">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon invoices">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Total Synced Invoices</h4>
+                            <div class="value" id="crm-stat-invoices">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon revenue">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Total Network Revenue</h4>
+                            <div class="value" id="crm-stat-revenue">Rs. 0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Registrations Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>Client Shop Sync Status</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="crm-dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Client Shop Name</th>
+                                    <th>Admin User</th>
+                                    <th>Shop Type</th>
+                                    <th class="text-center">Products</th>
+                                    <th class="text-center">Invoices</th>
+                                    <th class="text-right">Revenue</th>
+                                    <th>Phone Number</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crm-dashboard-table-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: CLIENT ACCOUNTS MANAGEMENT -->
+            <section id="crm-screen-users" class="app-screen hidden">
+                <div class="screen-header">
+                    <div>
+                        <h2>Client Shop Accounts</h2>
+                        <p>Create and manage login details and profiles of shopkeepers</p>
+                    </div>
+                    <button class="btn btn-primary" id="btn-crm-create-user">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px;">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
-                        New Sale (F2)
+                        Create Client Account
                     </button>
                 </div>
-            </header>
 
-            <!-- SCREENS -->
-            <div class="screen-container">
-                
-                <!-- 2.1: DASHBOARD SCREEN -->
-                <section id="screen-dashboard" class="app-screen">
-                    <div class="screen-header">
-                        <div>
-                            <h1>Dashboard Overview</h1>
-                            <p class="subtitle">Real-time shop statistics and alerts</p>
-                        </div>
-                        <div class="date-badge" id="dashboard-date">June 29, 2026</div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>Registered Accounts</h3>
                     </div>
+                    <div class="table-responsive">
+                        <table class="table" id="crm-users-table">
+                            <thead>
+                                <tr>
+                                    <th>Client Shop Name</th>
+                                    <th>Username</th>
+                                    <th>Shop Type</th>
+                                    <th>Address</th>
+                                    <th>Phone Number</th>
+                                    <th class="text-center">License Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crm-users-table-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-                    <!-- Stats Grid -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon-wrapper sales">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="1" x2="12" y2="23"></line>
-                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h3>Today's Sales</h3>
-                                <div class="stat-value" id="stat-sales">Rs. 0.00</div>
-                                <span class="stat-trend trend-up">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                                    Live tracking
-                                </span>
-                            </div>
-                        </div>
+            <!-- SECTION 3: CLIENT DATA BROWSER -->
+            <section id="crm-screen-browser" class="app-screen hidden">
+                <div class="screen-header">
+                    <div>
+                        <h2>Client Database Inspector</h2>
+                        <p>Directly browse inventory and invoice logs of any client shop</p>
+                    </div>
+                </div>
 
-                        <div class="stat-card">
-                            <div class="stat-icon-wrapper profit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M23 6l-9.5 9.5-5-5L1 18"></path>
-                                    <polyline points="17 6 23 6 23 12"></polyline>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h3>Today's Profit</h3>
-                                <div class="stat-value" id="stat-profit">Rs. 0.00</div>
-                                <span class="stat-trend trend-up" id="stat-profit-margin">0% margin</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon-wrapper invoices">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    <polyline points="10 9 9 9 8 9"></polyline>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h3>Invoices Placed</h3>
-                                <div class="stat-value" id="stat-invoices">0</div>
-                                <span class="stat-trend">Completed checkouts</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon-wrapper stock">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h3>Total Products</h3>
-                                <div class="stat-value" id="stat-products">0</div>
-                                <span class="stat-trend" id="stat-low-stock-count">0 items low stock</span>
-                            </div>
+                <div class="browser-layout">
+                    <div class="browser-sidebar">
+                        <h3>Select Client Shop</h3>
+                        <div class="client-list-scroll" id="crm-browser-client-list">
+                            <!-- Dynamic clients -->
                         </div>
                     </div>
-
-                    <!-- Two Column Dashboard Layout -->
-                    <div class="dashboard-details">
-                        <!-- Left Panel: Recent Sales & Performance Graph -->
-                        <div class="dashboard-panel main-panel">
-                            <div class="panel-header">
-                                <h2>Recent Sales Activity</h2>
-                                <button class="btn btn-secondary btn-sm" id="btn-view-all-sales">View All</button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table" id="dashboard-sales-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Invoice ID</th>
-                                            <th>Date & Time</th>
-                                            <th>Items</th>
-                                            <th>Grand Total</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Dynamic Content -->
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="browser-content">
+                        <div class="tabs-header">
+                            <button class="tab-btn active" id="btn-tab-products">Inventory Data</button>
+                            <button class="tab-btn" id="btn-tab-invoices">Sales History</button>
                         </div>
-
-                        <!-- Right Panel: Low Stock Warnings -->
-                        <div class="dashboard-panel side-panel">
-                            <div class="panel-header">
-                                <h2>⚠️ Low Stock Alerts</h2>
-                                <span class="alert-badge" id="low-stock-badge">0 Alerts</span>
+                        <div class="tab-panel-content" id="crm-browser-display-panel">
+                            <div class="empty-browser-state" id="crm-browser-empty">
+                                <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                <h3>No Client Selected</h3>
+                                <p>Select a client shop from the sidebar to inspect their synced inventory and invoices</p>
                             </div>
-                            <div class="alert-list" id="low-stock-list">
-                                <!-- Dynamic Low Stock Items -->
-                                <div class="empty-alert-state">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 36px; height: 36px; color: var(--text-muted); margin-bottom: 10px;">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                    </svg>
-                                    <p>All stock levels are healthy.</p>
+
+                            <!-- Products Grid Display (Hidden by default) -->
+                            <div id="crm-browser-products-view" class="hidden">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+                                    <h3 id="crm-browser-products-title">Inventory</h3>
+                                    <input type="text" id="crm-browser-product-search" class="form-control" style="width: 240px;" placeholder="Search products...">
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Barcode</th>
+                                                <th>Product Name</th>
+                                                <th>Category</th>
+                                                <th class="text-right">Cost Price</th>
+                                                <th class="text-right">Retail Price</th>
+                                                <th class="text-center">Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="crm-browser-products-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Invoices Grid Display (Hidden by default) -->
+                            <div id="crm-browser-invoices-view" class="hidden">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+                                    <h3>Sales Invoice Log</h3>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Invoice ID</th>
+                                                <th>Date & Time</th>
+                                                <th class="text-right">Subtotal</th>
+                                                <th class="text-right">Discount</th>
+                                                <th class="text-right">Grand Total</th>
+                                                <th class="text-right">Profit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="crm-browser-invoices-body"></tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <!-- 2.2: POINT OF SALE (POS) SCREEN -->
-                <section id="screen-pos" class="app-screen hidden">
-                    <div class="pos-layout">
-                        <!-- Left Panel: Product Search and Shopping Cart -->
-                        <div class="pos-cart-panel">
-                            <div class="pos-search-bar">
-                                <div class="search-input-wrapper">
-                                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    </svg>
-                                    <input type="text" id="pos-search-input" placeholder="Scan Barcode or Type Product Name... (Press / to focus)" autocomplete="off">
-                                </div>
-                                <!-- Dropdown results for clicking -->
-                                <div id="pos-search-results" class="search-results-dropdown hidden"></div>
-                            </div>
-
-                            <!-- Cart Table -->
-                            <div class="cart-table-container">
-                                <table class="cart-table" id="cart-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Product Name</th>
-                                            <th class="text-center" style="width: 140px;">Quantity</th>
-                                            <th class="text-right" style="width: 100px;">Unit Price</th>
-                                            <th class="text-right" style="width: 120px;">Total</th>
-                                            <th class="text-center" style="width: 60px;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cart-items-body">
-                                        <!-- Dynamic Cart Items -->
-                                    </tbody>
-                                </table>
-                                <div id="empty-cart-message" class="empty-cart-message">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <circle cx="9" cy="21" r="1"></circle>
-                                        <circle cx="20" cy="21" r="1"></circle>
-                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                    </svg>
-                                    <h3>Cart is empty</h3>
-                                    <p>Scan a barcode or search for items above to start a sale</p>
-                                </div>
-                            </div>
-
-                            <!-- Dashboard Mini Summary in POS -->
-                            <div class="pos-dashboard-summary">
-                                <h4>Today's Summary</h4>
-                                <div class="pos-summary-grid">
-                                    <div class="pos-summary-item">
-                                        <span class="label">Today's Sales</span>
-                                        <strong id="pos-stat-sales" class="text-primary">Rs. 0.00</strong>
-                                    </div>
-                                    <div class="pos-summary-item">
-                                        <span class="label">Today's Profit</span>
-                                        <strong id="pos-stat-profit" class="text-success">Rs. 0.00</strong>
-                                    </div>
-                                    <div class="pos-summary-item">
-                                        <span class="label">Invoices Completed</span>
-                                        <strong id="pos-stat-invoices">0</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Panel: Checkout Summary & Payment -->
-                        <div class="pos-checkout-panel">
-                            <div class="checkout-card">
-                                <h2>Checkout Summary</h2>
-                                
-                                <div class="summary-row">
-                                    <span>Subtotal</span>
-                                    <span id="checkout-subtotal">Rs. 0.00</span>
-                                </div>
-                                
-                                <div class="summary-row">
-                                    <span>Discount</span>
-                                    <div class="discount-input-group">
-                                        <input type="number" id="checkout-discount" value="0" min="0" step="any" placeholder="0">
-                                        <select id="checkout-discount-type">
-                                            <option value="flat">Rs.</option>
-                                            <option value="percent">%</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="summary-row">
-                                    <span>Tax (0%)</span>
-                                    <span id="checkout-tax">Rs. 0.00</span>
-                                </div>
-
-                                <hr class="divider">
-
-                                <div class="grand-total-section">
-                                    <span>GRAND TOTAL</span>
-                                    <div class="grand-total-val" id="checkout-grand-total">Rs. 0.00</div>
-                                </div>
-
-                                <div class="payment-input-section">
-                                    <div class="form-group">
-                                        <label for="checkout-tendered">Cash Received (Amount Tendered)</label>
-                                        <input type="number" id="checkout-tendered" class="tendered-input" placeholder="0.00" min="0" step="any">
-                                    </div>
-
-                                    <div class="change-due-display">
-                                        <span>Change Due</span>
-                                        <span class="change-val" id="checkout-change">Rs. 0.00</span>
-                                    </div>
-                                </div>
-
-                                <div class="checkout-actions">
-                                    <button id="btn-clear-cart" class="btn btn-secondary btn-lg">
-                                        <span>Clear (F5)</span>
-                                    </button>
-                                    <button id="btn-pay-print" class="btn btn-success btn-lg">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-right: 8px;">
-                                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                                            <rect x="6" y="14" width="12" height="8"></rect>
-                                        </svg>
-                                        <span>Pay & Print (F12)</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+            <!-- SECTION 3.5: SOFTWARE SALES & PROFIT (ADMIN ONLY) -->
+            <section id="crm-screen-software-sales" class="app-screen hidden">
+                <div class="screen-header">
+                    <div>
+                        <h2>Software Sales &amp; Income Tracker</h2>
+                        <p>Log sales of your desktop application to clients and track your software business revenue/profits</p>
                     </div>
-                </section>
+                    <button class="btn btn-primary" id="btn-crm-create-sale">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px;">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Log Software Sale
+                    </button>
+                </div>
 
-                <!-- 2.3: INVENTORY SCREEN -->
-                <section id="screen-inventory" class="app-screen hidden">
-                    <div class="screen-header">
-                        <div>
-                            <h1>Inventory Management</h1>
-                            <p class="subtitle">Track products, stock levels, cost and retail pricing</p>
-                        </div>
-                        <button id="btn-add-product" class="btn btn-primary">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px;">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon revenue" style="background-color: rgba(99, 102, 241, 0.1); color: var(--accent-primary);">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                <line x1="12" y1="4" x2="12" y2="20" />
                             </svg>
-                            Add New Product
+                        </div>
+                        <div class="stat-info">
+                            <h4>Total Software Income</h4>
+                            <div class="value" id="crm-soft-revenue">Rs. 0.00</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon invoices" style="background-color: rgba(239, 68, 68, 0.1); color: var(--accent-danger);">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Total Software Cost</h4>
+                            <div class="value" id="crm-soft-cost">Rs. 0.00</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon products" style="background-color: rgba(16, 185, 129, 0.1); color: var(--accent-success);">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Net Software Profit</h4>
+                            <div class="value" id="crm-soft-profit" style="color: var(--accent-success);">Rs. 0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>Software Sale Transactions</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="crm-sales-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Client Shop Name</th>
+                                    <th>Client Username</th>
+                                    <th class="text-right">Sale Price (Revenue)</th>
+                                    <th class="text-right">Cost Price (Expense)</th>
+                                    <th class="text-right">Net Profit</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crm-sales-table-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: SERVER SETTINGS & BACKUPS -->
+            <section id="crm-screen-settings" class="app-screen hidden">
+                <div class="screen-header">
+                    <div>
+                        <h2>Server Configuration</h2>
+                        <p>Manage system-wide backups and database purges</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <div class="panel" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                        <h3 style="font-family: var(--font-title); font-size: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                            📥 System Database Backup
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 14px;">
+                            Download a full backup of the server's master JSON database file. This contains all user login credentials, synced products, invoices, and profile configurations.
+                        </p>
+                        <button class="btn btn-primary" id="btn-crm-download-db" style="align-self: flex-start;">
+                            Download master_database.json
                         </button>
                     </div>
 
-                    <!-- Inventory Search & Filter Controls -->
-                    <div class="inventory-controls">
-                        <div class="search-input-wrapper" style="flex-grow: 1;">
-                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input type="text" id="inventory-search" placeholder="Search by Product Name, Barcode, or Category...">
-                        </div>
-                        <select id="inventory-filter-category" class="filter-select">
-                            <option value="all">All Categories</option>
-                            <!-- Dynamic options -->
-                        </select>
-                        <select id="inventory-filter-stock" class="filter-select">
-                            <option value="all">All Stock Statuses</option>
-                            <option value="low">Low Stock Alerts</option>
-                            <option value="out">Out of Stock</option>
-                            <option value="healthy">Healthy Stock</option>
-                        </select>
+                    <div class="panel" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                        <h3 style="font-family: var(--font-title); font-size: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; color: var(--accent-danger);">
+                            ⚠️ Factory Reset Database
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 14px;">
+                            Wipe all synced client records, product databases, invoices, and client profiles. The system administrator login will remain active. This action is irreversible.
+                        </p>
+                        <button class="btn btn-danger" id="btn-crm-wipe-db" style="align-self: flex-start;">
+                            Factory Reset Cloud Database
+                        </button>
                     </div>
+                </div>
+            </section>
+        </div>
+    </main>
 
-                    <!-- Inventory Table -->
-                    <div class="inventory-panel">
-                        <div class="table-responsive">
-                            <table class="table" id="inventory-table">
-                                <thead>
-                                    <tr>
-                                        <th>Barcode / SKU</th>
-                                        <th>Product Name</th>
-                                        <th>Category</th>
-                                        <th class="text-right">Purchase Price (Cost)</th>
-                                        <th class="text-right">Selling Price (Retail)</th>
-                                        <th class="text-center">Stock Quantity</th>
-                                        <th class="text-center">Min Alert Level</th>
-                                        <th>Status</th>
-                                        <th class="text-center">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventory-table-body">
-                                    <!-- Dynamic Inventory Rows -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 2.5: REPORTS & FINANCIALS SCREEN -->
-                <section id="screen-reports" class="app-screen hidden">
-                    <div class="screen-header">
-                        <div>
-                            <h1>Financials & Reports (Profit & Loss)</h1>
-                            <p class="subtitle">Analyze sales revenues, cost of goods sold, and net profit margins</p>
-                        </div>
-                        <div class="report-filters">
-                            <input type="date" id="report-start-date" class="filter-select">
-                            <span style="align-self: center; color: var(--text-secondary);">to</span>
-                            <input type="date" id="report-end-date" class="filter-select">
-                            <button id="btn-filter-reports" class="btn btn-secondary">Filter</button>
-                        </div>
-                    </div>
-
-                    <!-- Financial Summary Cards -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon-wrapper sales">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                                    <line x1="12" y1="4" x2="12" y2="20"></line>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h3>Total Revenue</h3>
-                                <div class="stat-value" id="report-total-revenue">Rs. 0.00</div>
-                                <span class="stat-trend text-secondary">Total sales generated</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon-wrapper stock" style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h3>Cost of Goods Sold (COGS)</h3>
-                                <div class="stat-value" id="report-total-cogs">Rs. 0.00</div>
-                                <span class="stat-trend text-secondary">Purchase cost of items sold</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon-wrapper profit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M12 8v8M8 12h8"></path>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h3>Net Profit</h3>
-                                <div class="stat-value" id="report-net-profit">Rs. 0.00</div>
-                                <span class="stat-trend trend-up" id="report-margin-percentage">0% net margin</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Invoice Search Bar -->
-                    <div class="invoice-search-container">
-                        <div class="search-input-wrapper" style="flex-grow: 1;">
-                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input type="text" id="invoice-search" placeholder="Search by Invoice ID, Date, or Customer Name..." autocomplete="off">
-                        </div>
-                    </div>
-
-                    <!-- Invoices List & Details -->
-                    <div class="dashboard-details" style="grid-template-columns: 1fr;">
-                        <div class="dashboard-panel main-panel">
-                            <div class="panel-header">
-                                <h2>Invoice Registry & Log</h2>
-                                <div class="export-buttons">
-                                    <button id="btn-export-pdf" class="btn btn-secondary btn-sm">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                                        Export PDF Report
-                                    </button>
-                                    <button id="btn-export-excel" class="btn btn-secondary btn-sm">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                                        Export Excel Sheet
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table" id="reports-invoices-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Invoice ID</th>
-                                            <th>Date & Time</th>
-                                            <th class="text-right">Items Purchased</th>
-                                            <th class="text-right">Subtotal</th>
-                                            <th class="text-right">Discount</th>
-                                            <th class="text-right">Grand Total</th>
-                                            <th class="text-right">Profit Generated</th>
-                                            <th class="text-center">Sync Status</th>
-                                            <th class="text-center">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="reports-invoices-body">
-                                        <!-- Dynamic Invoice Registry -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 2.6: SETTINGS & CLOUD SYNC SCREEN -->
-                <section id="screen-settings" class="app-screen hidden">
-                    <div class="screen-header">
-                        <div>
-                            <h1>Settings & Data Management</h1>
-                            <p class="subtitle">Configure your store information, manage local data, and sync with cloud</p>
-                        </div>
-                    </div>
-
-                    <div class="settings-grid">
-                        <!-- Shop Profile Configuration -->
-                        <div class="settings-card">
-                            <h2>🏪 Shop Profile</h2>
-                            <form id="settings-profile-form">
-                                <div class="form-group">
-                                    <label for="settings-shop-name">Shop Name</label>
-                                    <input type="text" id="settings-shop-name" placeholder="Shop Name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="settings-shop-address">Shop Address</label>
-                                    <input type="text" id="settings-shop-address" placeholder="e.g. Shop # 4, Main Bazar, Lahore">
-                                </div>
-                                <div class="form-group">
-                                    <label for="settings-shop-phone">Phone Number (Receipts)</label>
-                                    <input type="text" id="settings-shop-phone" placeholder="e.g. +92 300 1234567">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Save Profile Info</button>
-                            </form>
-                        </div>
-
-
-
-                        <!-- Dashboard Preferences -->
-                        <div class="settings-card">
-                            <h2>📊 Dashboard Preferences</h2>
-                            <p class="card-desc">Customize which metrics and alerts appear on your main dashboard screen.</p>
-                            
-                            <div class="preferences-list">
-                                <div class="preference-item">
-                                    <div class="pref-info">
-                                        <h4>Show Today's Sales</h4>
-                                        <span>Display total revenue for the current day.</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked id="pref-sales">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="preference-item">
-                                    <div class="pref-info">
-                                        <h4>Show Net Profit</h4>
-                                        <span>Display profit margin and net earnings.</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked id="pref-profit">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="preference-item">
-                                    <div class="pref-info">
-                                        <h4>Low Stock Alerts</h4>
-                                        <span>Show warnings for items running out of inventory.</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked id="pref-alerts">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="preference-item">
-                                    <div class="pref-info">
-                                        <h4>Recent Activity Log</h4>
-                                        <span>Display the latest invoice transactions.</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked id="pref-activity">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Notification Settings -->
-                        <div class="settings-card">
-                            <h2>🔔 Notification Settings</h2>
-                            <p class="card-desc">Manage how and when you receive system alerts and notifications.</p>
-                            
-                            <div class="preferences-list">
-                                <div class="preference-item">
-                                    <div class="pref-info">
-                                        <h4>Enable Audio Alerts</h4>
-                                        <span>Play a sound on new sale or low stock.</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="pref-audio">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="preference-item">
-                                    <div class="pref-info">
-                                        <h4>End of Day Report</h4>
-                                        <span>Auto-generate a summary report at closing.</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked id="pref-eod">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cloud Synchronizer -->
-                        <div class="settings-card">
-                            <h2>☁️ Cloud Sync (Web Server)</h2>
-                            <p class="card-desc">Configure automatic backups to the online cloud. Syncing handles conflict resolution using Universally Unique Identifiers (UUIDs).</p>
-                            
-                            <div class="sync-panel-box">
-                                <div class="sync-stat-item">
-                                    <span>Sync Configuration:</span>
-                                    <strong id="settings-sync-enabled-label">Enabled</strong>
-                                </div>
-                                <div class="sync-stat-item">
-                                    <span>Unsynced Local Records:</span>
-                                    <strong id="unsynced-records-count" class="text-warning">0</strong>
-                                </div>
-                                <div class="sync-stat-item">
-                                    <span>Last Cloud Sync:</span>
-                                    <strong id="last-sync-time">Never</strong>
-                                </div>
-
-                                <div class="sync-progress-bar-container hidden" id="sync-progress-bar">
-                                    <div class="sync-progress-bar-fill" style="width: 0%"></div>
-                                </div>
-
-                                <button id="btn-force-sync" class="btn btn-success btn-block" style="margin-top: 15px;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-right:8px; animation: spin 2s linear infinite; display: none;" id="sync-spinner"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                                    Force Sync to Web Cloud
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <!-- MODAL: ADD/EDIT PRODUCT -->
-    <div id="modal-product" class="modal-overlay hidden">
+    <!-- MODAL: CREATE/EDIT CLIENT ACCOUNT -->
+    <div class="modal-overlay hidden" id="crm-user-modal">
         <div class="modal-card">
             <div class="modal-header">
-                <h2 id="modal-product-title">Add New Product</h2>
-                <button class="btn-close-modal" id="btn-close-product-modal">&times;</button>
+                <h3 id="crm-modal-title">Create Client Account</h3>
+                <button class="btn-close" id="btn-crm-close-modal">&times;</button>
             </div>
-            <form id="product-form">
-                <input type="hidden" id="product-id">
+            <form id="crm-user-form">
+                <input type="hidden" id="crm-edit-mode" value="false">
+                <input type="hidden" id="crm-edit-username">
                 
-                <div class="form-group">
-                    <label for="product-name">Product Name *</label>
-                    <input type="text" id="product-name" placeholder="e.g. Tapal Danedar Chai 950g" required>
-                </div>
-
-                <div class="form-row">
+                <div class="modal-body">
                     <div class="form-group">
-                        <label for="product-barcode">Barcode / SKU</label>
-                        <div class="input-with-button">
-                            <input type="text" id="product-barcode" placeholder="Scan barcode or leave blank">
-                            <button type="button" id="btn-generate-barcode" class="btn btn-secondary btn-sm" title="Generate Barcode">Auto</button>
+                        <label for="client-username">Username *</label>
+                        <input type="text" id="client-username" class="form-control" required placeholder="e.g. jaffar_parts">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-password" id="client-password-label">Password *</label>
+                        <input type="password" id="client-password" class="form-control" required placeholder="••••••••">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="client-shop-name">Shop Name *</label>
+                            <input type="text" id="client-shop-name" class="form-control" required placeholder="e.g. Jaffar Bike Spare Parts">
+                        </div>
+                        <div class="form-group">
+                            <label for="client-shop-type">Shop Type *</label>
+                            <select id="client-shop-type" class="form-control" required>
+                                <option value="general">General Store</option>
+                                <option value="kiryana">Kiryana / Grocery</option>
+                                <option value="bike">Bike Spare Parts</option>
+                                <option value="rickshaw">Rickshaw Spare Parts</option>
+                                <option value="electronics">Electronics / Mobile</option>
+                                <option value="pharmacy">Pharmacy</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="product-category">Category *</label>
-                        <input type="text" id="product-category" placeholder="e.g. Beverages, Spare Parts" required list="categories-datalist">
-                        <datalist id="categories-datalist"></datalist>
+                        <label for="client-phone">Phone Number</label>
+                        <input type="text" id="client-phone" class="form-control" placeholder="e.g. 0300-1234567">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-address">Address</label>
+                        <input type="text" id="client-address" class="form-control" placeholder="e.g. Shop # 10, Motor Market, Lahore">
                     </div>
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="product-cost-price">Purchase Price (Cost) *</label>
-                        <input type="number" id="product-cost-price" placeholder="0.00" min="0" step="any" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-sell-price">Selling Price (Retail) *</label>
-                        <input type="number" id="product-sell-price" placeholder="0.00" min="0" step="any" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="product-stock-qty">Initial Stock Qty *</label>
-                        <input type="number" id="product-stock-qty" placeholder="0" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-low-stock-alert">Low Stock Alert Level *</label>
-                        <input type="number" id="product-low-stock-alert" placeholder="5" min="0" required value="5">
-                    </div>
-                </div>
-
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btn-cancel-product-modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Product</button>
+                    <button type="button" class="btn btn-secondary" id="btn-crm-cancel-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-crm-save-user">Save Account</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL: PRINT RECEIPT (RECEIPT PREVIEW) -->
-    <div id="modal-receipt" class="modal-overlay hidden">
-        <div class="modal-card receipt-modal-card">
+    <!-- MODAL: LOG SOFTWARE SALE -->
+    <div class="modal-overlay hidden" id="crm-software-sale-modal">
+        <div class="modal-card">
             <div class="modal-header">
-                <h2>Invoice Receipt Preview</h2>
-                <button class="btn-close-modal" id="btn-close-receipt-modal">&times;</button>
+                <h3>Log Software Sale</h3>
+                <button class="btn-close" id="btn-crm-close-sale-modal">&times;</button>
             </div>
-            
-            <!-- Receipt Printable Layout -->
-            <div class="receipt-print-area" id="receipt-print-area">
-                <div class="receipt-header">
-                    <h2 id="receipt-shop-name">MY SHOP</h2>
-                    <p id="receipt-shop-address">123 Main Street, Town</p>
-                    <p id="receipt-shop-phone">Phone: 0300-0000000</p>
-                    <hr class="receipt-dashed-line">
-                    <h3>CASH RECEIPT</h3>
-                    <hr class="receipt-dashed-line">
-                </div>
-                
-                <div class="receipt-info">
-                    <div><strong>Invoice ID:</strong> <span id="receipt-id">12345</span></div>
-                    <div><strong>Date:</strong> <span id="receipt-date">2026-06-29 19:00</span></div>
-                    <div><strong>Operator:</strong> <span id="receipt-operator">Admin</span></div>
-                </div>
-
-                <hr class="receipt-dashed-line">
-                
-                <table class="receipt-items-table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th class="text-center">Qty</th>
-                            <th class="text-right">Price</th>
-                            <th class="text-right">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="receipt-items-body">
-                        <!-- Dynamic items -->
-                    </tbody>
-                </table>
-
-                <hr class="receipt-dashed-line">
-
-                <div class="receipt-totals">
-                    <div class="receipt-total-row">
-                        <span>Subtotal:</span>
-                        <span id="receipt-subtotal">Rs. 0.00</span>
+            <form id="crm-software-sale-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="sale-client-select">Select Client Shop (Optional)</label>
+                        <select id="sale-client-select" class="form-control">
+                            <option value="">-- Custom Shop (Not Listed) --</option>
+                        </select>
                     </div>
-                    <div class="receipt-total-row">
-                        <span>Discount:</span>
-                        <span id="receipt-discount">Rs. 0.00</span>
+                    <div class="form-group">
+                        <label for="sale-shop-name">Client Shop Name *</label>
+                        <input type="text" id="sale-shop-name" class="form-control" required placeholder="e.g. Jaffar Bike Spare Parts">
                     </div>
-                    <div class="receipt-total-row receipt-grand-total">
-                        <span>GRAND TOTAL:</span>
-                        <span id="receipt-grand-total">Rs. 0.00</span>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sale-price">Sale Price (Rs.) *</label>
+                            <input type="number" id="sale-price" class="form-control" required min="0" placeholder="e.g. 15000">
+                        </div>
+                        <div class="form-group">
+                            <label for="sale-cost">Cost Price / Expense (Rs.)</label>
+                            <input type="number" id="sale-cost" class="form-control" min="0" placeholder="e.g. 2000" value="0">
+                        </div>
                     </div>
-                    <hr class="receipt-dashed-line" style="margin: 4px 0;">
-                    <div class="receipt-total-row">
-                        <span>Cash Tendered:</span>
-                        <span id="receipt-tendered">Rs. 0.00</span>
-                    </div>
-                    <div class="receipt-total-row">
-                        <span>Change Due:</span>
-                        <span id="receipt-change">Rs. 0.00</span>
+                    <div class="form-group">
+                        <label for="sale-date">Sale Date</label>
+                        <input type="date" id="sale-date" class="form-control" required>
                     </div>
                 </div>
-
-                <hr class="receipt-dashed-line">
-                
-                <div class="receipt-footer">
-                    <p>Thank You For Your Business!</p>
-                    <p>Software Powered by ShopSync POS</p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-crm-cancel-sale-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Log Sale</button>
                 </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btn-close-receipt-preview">Close</button>
-                <button type="button" class="btn btn-success" id="btn-trigger-print">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-right:8px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                    Print Receipt (Ctrl+P)
-                </button>
-            </div>
+            </form>
         </div>
     </div>
 
-    <!-- Toast Notifications -->
-    <div id="toast-container" class="toast-container"></div>
-
-    <script src="app.js"></script>
+    <!-- Script Import -->
+    <script src="crm.js"></script>
 </body>
 </html>
