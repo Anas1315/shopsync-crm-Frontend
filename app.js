@@ -1104,7 +1104,7 @@ async function forceCloudSync() {
 
     try {
         // Push local changes
-        const pushResponse = await fetch('/api/sync/push', {
+        const pushResponse = await fetch('https://shopsync-crm-backend.onrender.com/api/sync/push', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1179,7 +1179,7 @@ function setupEventListeners() {
         const pass = document.getElementById('login-password').value;
 
         try {
-            const response = await fetch('/api/auth/login', {
+            const response = await fetch('https://shopsync-crm-backend.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password: pass })

@@ -1,6 +1,6 @@
 // --- ShopSync CRM JavaScript Controller ---
 
-const API_BASE = ""; // Relative paths since it's served by the same Express server
+const API_BASE = "https://shopsync-crm-backend.onrender.com";
 
 // Global State
 let allUsers = [];
