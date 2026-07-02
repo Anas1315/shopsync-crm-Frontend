@@ -805,18 +805,42 @@
                 <h2>ShopSync CRM</h2>
                 <p>System Administrator Portal</p>
             </div>
+            <div id="crm-auth-toggle-container" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button type="button" class="btn btn-primary" id="btn-show-login" style="flex:1;">Login</button>
+                <button type="button" class="btn btn-outline" id="btn-show-signup" style="flex:1;">Setup Admin</button>
+            </div>
+
+            <!-- Login Form -->
             <form id="crm-login-form">
                 <div class="form-group">
                     <label for="crm-username">Admin Username</label>
-                    <input type="text" id="crm-username" class="form-control" placeholder="admin" required value="admin">
+                    <input type="text" id="crm-username" class="form-control" placeholder="Enter username" required>
                 </div>
                 <div class="form-group">
                     <label for="crm-password">Admin Password</label>
-                    <input type="password" id="crm-password" class="form-control" placeholder="••••••••" required value="admin123">
+                    <input type="password" id="crm-password" class="form-control" placeholder="Enter password" required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block" style="width:100%; justify-content: center; margin-top: 10px;">
                     Authenticate Admin
                 </button>
+            </form>
+
+            <!-- Signup Form (Hidden initially) -->
+            <form id="crm-signup-form" class="hidden">
+                <div class="form-group">
+                    <label for="crm-new-username">New Admin Username</label>
+                    <input type="text" id="crm-new-username" class="form-control" placeholder="Create username" required>
+                </div>
+                <div class="form-group">
+                    <label for="crm-new-password">New Admin Password</label>
+                    <input type="password" id="crm-new-password" class="form-control" placeholder="Create password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" style="width:100%; justify-content: center; margin-top: 10px;">
+                    Set Credentials
+                </button>
+                <p style="text-align:center; font-size: 11px; margin-top:10px; color: var(--text-secondary);">
+                    This will lock the CRM dashboard to your custom credentials.
+                </p>
             </form>
         </div>
     </div>

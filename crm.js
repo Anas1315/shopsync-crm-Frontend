@@ -11,6 +11,9 @@ let activeBrowserTab = "products"; // or "invoices"
 // DOM Elements
 const crmLoginScreen = document.getElementById("crm-login-screen");
 const crmLoginForm = document.getElementById("crm-login-form");
+const crmSignupForm = document.getElementById("crm-signup-form");
+const btnShowLogin = document.getElementById("btn-show-login");
+const btnShowSignup = document.getElementById("btn-show-signup");
 const crmSidebar = document.getElementById("crm-sidebar");
 const crmMainContent = document.getElementById("crm-main-content");
 const crmTopbarTitleText = document.getElementById("crm-topbar-title-text");
@@ -27,14 +30,32 @@ document.addEventListener("DOMContentLoaded", () => {
         loadAllData();
     }
 
+    // Auth Toggle Logic
+    btnShowLogin.addEventListener("click", () => {
+        crmLoginForm.classList.remove("hidden");
+        crmSignupForm.classList.add("hidden");
+        btnShowLogin.classList.replace("btn-outline", "btn-primary");
+        btnShowSignup.classList.replace("btn-primary", "btn-outline");
+    });
+
+    btnShowSignup.addEventListener("click", () => {
+        crmSignupForm.classList.remove("hidden");
+        crmLoginForm.classList.add("hidden");
+        btnShowSignup.classList.replace("btn-outline", "btn-primary");
+        btnShowLogin.classList.replace("btn-primary", "btn-outline");
+    });
+
     // Login Form Submit
     crmLoginForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const username = document.getElementById("crm-username").value;
         const password = document.getElementById("crm-password").value;
 
-        // In a simple local deployment, we check credentials
-        if (username === "admin" && password === "admin123") {
+        // Check against custom credentials in localStorage, or fallback to default
+        const savedUser = localStorage.getItem("crm_admin_user") || "admin";
+        const savedPass = localStorage.getItem("crm_admin_pass") || "admin123";
+
+        if (username === savedUser && password === savedPass) {
             sessionStorage.setItem("crm_authenticated", "true");
             showMainInterface();
             loadAllData();
@@ -42,6 +63,24 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             showToast("Invalid admin credentials!", "danger");
         }
+    });
+
+    // Signup Form Submit
+    crmSignupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newUsername = document.getElementById("crm-new-username").value;
+        const newPassword = document.getElementById("crm-new-password").value;
+
+        if (newUsername.trim() === "" || newPassword.trim() === "") {
+            showToast("Credentials cannot be empty", "danger");
+            return;
+        }
+
+        localStorage.setItem("crm_admin_user", newUsername);
+        localStorage.setItem("crm_admin_pass", newPassword);
+        
+        showToast("New Admin Credentials Saved! Please login.", "success");
+        btnShowLogin.click(); // Switch back to login view
     });
 
     // Logout
